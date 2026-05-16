@@ -5,3 +5,4 @@ export interface ComposeResult {
     readonly skippedEmit: number;
 }
 export declare function composeOpenApiIrNextJs(openapiJsonPath: string, outDir: string, sourceApp?: string): ComposeResult;
+export declare function composeHarIrNextJs(harJsonPath: string, outDir: string, sourceApp?: string): ComposeResult;

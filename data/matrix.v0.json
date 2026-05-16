@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1.0",
   "program": "Web Platform Translation Program",
-  "updatedAt": "2026-05-17",
+  "updatedAt": "2026-05-16",
   "edges": [
     {
       "id": "php-legacy-to-hono-ts",
@@ -182,9 +182,52 @@
       "irHub": "theorem6/wptp-ir",
       "evidence": {
         "corpus": "petstore-mini (OpenAPI fixture)",
-        "ci": "wptp-emit-nextjs compose test",
-        "harness": "composer path: openapi -> ir -> nextjs (see composer-paths.v0.json)",
+        "ci": "wptp-matrix npm test + verify:harness",
+        "harness": "wptp-matrix bronze contract (openapi-ir-nextjs)",
         "notes": "No single-hop Gold; multi-step bronze only."
+      }
+    },
+    {
+      "id": "browser-to-nextjs-composed",
+      "source": {
+        "family": "browser-trace",
+        "component": "wptp-adapter-browser",
+        "repo": "theorem6/wptp-adapter-browser"
+      },
+      "target": {
+        "family": "nextjs-route-handlers",
+        "component": "wptp-emit-nextjs",
+        "repo": "theorem6/wptp-emit-nextjs"
+      },
+      "grade": "bronze",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/mini.har.json",
+        "ci": "wptp-matrix npm test + verify:harness",
+        "harness": "wptp-matrix bronze contract (har-ir-nextjs)",
+        "notes": "Customer-owned traces only; structural stubs."
+      }
+    },
+    {
+      "id": "ir-v0-to-webir-bundle",
+      "source": {
+        "family": "wptp-ir-v0",
+        "component": "export-ir-to-webir-v0",
+        "repo": "theorem6/wptp-ir"
+      },
+      "target": {
+        "family": "chrysalis-webir",
+        "component": "webir-bundle",
+        "repo": "theorem6/chrysalis"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "evidence": {
+        "corpus": "minimal-route.webir.bundle.json round-trip",
+        "ci": "wptp-ir npm test",
+        "harness": "exportIrToWebIrBundleV0 + importWebIrBundleJson",
+        "notes": "Enables openapi→hono via Chrysalis emit when wired; not full PHP semantics."
       }
     }
   ]

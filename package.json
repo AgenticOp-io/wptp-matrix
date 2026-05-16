@@ -4,25 +4,37 @@
   "description": "WPTP public compatibility matrix (source x target x verification grade)",
   "type": "module",
   "license": "MIT",
-  "repository": { "type": "git", "url": "https://github.com/theorem6/wptp-matrix.git" },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/theorem6/wptp-matrix.git"
+  },
   "bin": {
-    "wptp-compose": "./dist/compose-cli.js"
+    "wptp-compose": "./dist/compose-cli.js",
+    "wptp-verify-harness": "./dist/verify-harness-cli.js"
   },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "compose": "tsx src/compose-cli.ts",
+    "verify:harness": "tsx src/verify-harness-cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "validate": "tsx src/cli-validate.ts"
   },
   "exports": {
-    ".": { "types": "./dist/index.d.ts", "import": "./dist/index.js" },
-    "./compose": { "types": "./dist/compose.d.ts", "import": "./dist/compose.js" }
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./compose": {
+      "types": "./dist/compose.d.ts",
+      "import": "./dist/compose.js"
+    }
   },
   "dependencies": {
-    "@wptp/ir": "github:theorem6/wptp-ir#v0.1.0",
-    "@wptp/adapter-openapi": "github:theorem6/wptp-adapter-openapi#v0.1.0",
-    "@wptp/emit-nextjs": "github:theorem6/wptp-emit-nextjs#v0.1.0"
+    "@wptp/adapter-browser": "file:../wptp-adapter-browser",
+    "@wptp/adapter-openapi": "file:../wptp-adapter-openapi",
+    "@wptp/emit-nextjs": "file:../wptp-emit-nextjs",
+    "@wptp/ir": "file:../wptp-ir"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",

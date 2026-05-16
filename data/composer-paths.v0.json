@@ -14,6 +14,17 @@
       "matrixEdges": ["openapi-to-wptp-ir", "wptp-ir-to-nextjs-handlers", "openapi-to-nextjs-composed"]
     },
     {
+      "id": "har-ir-nextjs",
+      "description": "Browser HAR trace to Next.js App Router stubs via neutral IR",
+      "grade": "bronze",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
+        { "repo": "theorem6/wptp-ir", "action": "optional normalize (future)" },
+        { "repo": "theorem6/wptp-emit-nextjs", "action": "emitNextJsAppRouter" }
+      ],
+      "matrixEdges": ["browser-trace-to-wptp-ir", "wptp-ir-to-nextjs-handlers", "browser-to-nextjs-composed"]
+    },
+    {
       "id": "php-webir-hono",
       "description": "Legacy PHP to Hono TypeScript (Chrysalis monolith path)",
       "grade": "gold",

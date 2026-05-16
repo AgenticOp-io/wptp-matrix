@@ -1,0 +1,17 @@
+{
+  "log": {
+    "version": "1.2",
+    "creator": { "name": "wptp-fixture", "version": "1.0" },
+    "entries": [
+      {
+        "request": { "method": "GET", "url": "https://example.com/api/pets" }
+      },
+      {
+        "request": { "method": "POST", "url": "https://example.com/api/pets" }
+      },
+      {
+        "request": { "method": "GET", "url": "https://example.com/api/pets/42" }
+      }
+    ]
+  }
+}
