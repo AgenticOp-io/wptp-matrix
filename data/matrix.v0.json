@@ -1,0 +1,164 @@
+{
+  "schemaVersion": "0.1.0",
+  "program": "Web Platform Translation Program",
+  "updatedAt": "2026-05-16",
+  "edges": [
+    {
+      "id": "php-legacy-to-hono-ts",
+      "source": {
+        "family": "php-legacy-web",
+        "component": "chrysalis-ingest",
+        "repo": "theorem6/chrysalis"
+      },
+      "target": {
+        "family": "hono-typescript",
+        "component": "chrysalis-emit-hono",
+        "repo": "theorem6/chrysalis"
+      },
+      "grade": "gold",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/tiny-blog",
+        "ci": "typecheck-and-test",
+        "harness": "chrysalis verify",
+        "notes": "Scoped to tiny-blog + flagship CI; not all PHP constructs."
+      }
+    },
+    {
+      "id": "php-legacy-to-fastify-ts",
+      "source": {
+        "family": "php-legacy-web",
+        "component": "chrysalis-ingest",
+        "repo": "theorem6/chrysalis"
+      },
+      "target": {
+        "family": "fastify-typescript",
+        "component": "chrysalis-emit-fastify",
+        "repo": "theorem6/chrysalis"
+      },
+      "grade": "gold",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/tiny-blog",
+        "ci": "typecheck-and-test",
+        "harness": "chrysalis verify"
+      }
+    },
+    {
+      "id": "php-legacy-to-chimera",
+      "source": {
+        "family": "php-legacy-web",
+        "component": "chrysalis-ingest",
+        "repo": "theorem6/chrysalis"
+      },
+      "target": {
+        "family": "chimera-dual-stack",
+        "component": "runtime-chimera",
+        "repo": "theorem6/chrysalis"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "evidence": {
+        "ci": "ci:chimera-operator-snapshot",
+        "harness": "chrysalis verify + chimera routing",
+        "notes": "Silver: routing and session dimensions may need manual checklist per deployment."
+      }
+    },
+    {
+      "id": "webir-bundle-to-wptp-ir",
+      "source": {
+        "family": "chrysalis-webir",
+        "component": "webir-bundle-export",
+        "repo": "theorem6/chrysalis"
+      },
+      "target": {
+        "family": "wptp-ir-v0",
+        "component": "import-webir-v0",
+        "repo": "theorem6/wptp-ir"
+      },
+      "grade": "gold",
+      "status": "supported",
+      "evidence": {
+        "corpus": "tiny-blog.webir.bundle.json",
+        "ci": "wptp-ir npm test",
+        "harness": "import loss report (zero losses on tiny-blog)"
+      }
+    },
+    {
+      "id": "openapi-to-wptp-ir",
+      "source": {
+        "family": "openapi-contract",
+        "component": "wptp-adapter-openapi",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "target": {
+        "family": "wptp-ir-v0",
+        "component": "import-openapi-v0",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "grade": "bronze",
+      "status": "supported",
+      "evidence": {
+        "corpus": "fixtures/petstore-mini.openapi.json",
+        "ci": "wptp-adapter-openapi npm test",
+        "harness": "structural lift only (no replay yet)"
+      }
+    },
+    {
+      "id": "openapi-to-hono-ts",
+      "source": {
+        "family": "openapi-contract",
+        "component": "wptp-adapter-openapi",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "target": {
+        "family": "hono-typescript",
+        "component": "chrysalis-emit-hono",
+        "repo": "theorem6/chrysalis"
+      },
+      "grade": "bronze",
+      "status": "planned",
+      "evidence": {
+        "notes": "Requires IR→WebIR or direct emit bridge; not yet implemented."
+      }
+    },
+    {
+      "id": "browser-trace-to-wptp-ir",
+      "source": {
+        "family": "browser-trace",
+        "component": "wptp-adapter-browser",
+        "repo": "theorem6/wptp-adapter-browser"
+      },
+      "target": {
+        "family": "wptp-ir-v0",
+        "component": "import-browser-v0",
+        "repo": "theorem6/wptp-ir"
+      },
+      "grade": "bronze",
+      "status": "planned",
+      "evidence": {
+        "notes": "D3 candidate; legal review for capture mode required."
+      }
+    },
+    {
+      "id": "wptp-ir-to-nextjs-handlers",
+      "source": {
+        "family": "wptp-ir-v0",
+        "component": "neutral-ir",
+        "repo": "theorem6/wptp-ir"
+      },
+      "target": {
+        "family": "nextjs-route-handlers",
+        "component": "wptp-emit-nextjs",
+        "repo": "theorem6/wptp-emit-nextjs"
+      },
+      "grade": "bronze",
+      "status": "planned",
+      "evidence": {
+        "notes": "D4 candidate emit family."
+      }
+    }
+  ]
+}
