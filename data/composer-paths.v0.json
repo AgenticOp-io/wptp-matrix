@@ -45,6 +45,26 @@
       "matrixEdges": ["browser-trace-to-wptp-ir", "browser-to-hono-ts"]
     },
     {
+      "id": "openapi-ir-fastify",
+      "description": "OpenAPI contract to Fastify TypeScript via IR (@wptp/emit-fastify bronze stubs)",
+      "grade": "bronze",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
+        { "repo": "theorem6/wptp-emit-fastify", "action": "emitFastifyBronzeProject" }
+      ],
+      "matrixEdges": ["openapi-to-wptp-ir", "openapi-to-fastify-ts"]
+    },
+    {
+      "id": "har-ir-fastify",
+      "description": "Browser HAR trace to Fastify TypeScript via IR (@wptp/emit-fastify bronze stubs)",
+      "grade": "bronze",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
+        { "repo": "theorem6/wptp-emit-fastify", "action": "emitFastifyBronzeProject" }
+      ],
+      "matrixEdges": ["browser-trace-to-wptp-ir", "browser-to-fastify-ts"]
+    },
+    {
       "id": "php-webir-hono",
       "description": "Legacy PHP to Hono TypeScript (Chrysalis monolith path)",
       "grade": "gold",

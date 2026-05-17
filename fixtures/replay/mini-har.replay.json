@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "mini-har",
+  "description": "Contract replay for HAR mini fixture composed stubs",
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/api/pets",
+      "status": 200,
+      "body": { "ok": true, "route": "/api/pets", "method": "GET" }
+    },
+    {
+      "method": "POST",
+      "path": "/api/pets",
+      "status": 201,
+      "requestBody": { "probe": true },
+      "body": { "ok": true, "route": "/api/pets", "method": "POST" }
+    },
+    {
+      "method": "GET",
+      "path": "/api/pets/42",
+      "status": 200,
+      "body": { "ok": true, "route": "/api/pets/42", "method": "GET" }
+    }
+  ]
+}

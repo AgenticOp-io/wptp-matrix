@@ -1,6 +1,6 @@
 {
   "name": "@wptp/matrix",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "WPTP public compatibility matrix (source x target x verification grade)",
   "type": "module",
   "license": "MIT",
@@ -19,7 +19,8 @@
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
     "validate": "tsx src/cli-validate.ts",
-    "site:validate": "node scripts/site-validate.mjs"
+    "site:validate": "node scripts/site-validate.mjs",
+    "site:build": "node scripts/build-site.mjs"
   },
   "exports": {
     ".": {
@@ -36,11 +37,13 @@
     "@wptp/adapter-openapi": "github:theorem6/wptp-adapter-openapi#v0.1.1",
     "@wptp/adapter-browser": "github:theorem6/wptp-adapter-browser#v0.1.0",
     "@wptp/emit-nextjs": "github:theorem6/wptp-emit-nextjs#v0.1.0",
-    "@wptp/emit-hono": "github:theorem6/wptp-emit-hono#v0.1.1"
+    "@wptp/emit-hono": "github:theorem6/wptp-emit-hono#v0.1.1",
+    "@wptp/emit-fastify": "github:theorem6/wptp-emit-fastify#v0.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",
     "hono": "^4.6.0",
+    "fastify": "^4.28.1",
     "tsx": "^4.22.0",
     "typescript": "^5.4.5",
     "vitest": "^3.2.4"

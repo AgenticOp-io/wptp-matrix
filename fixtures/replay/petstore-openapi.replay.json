@@ -1,0 +1,26 @@
+{
+  "schemaVersion": "0.1.0",
+  "id": "petstore-openapi",
+  "description": "Contract replay for OpenAPI petstore-mini composed stubs",
+  "cases": [
+    {
+      "method": "GET",
+      "path": "/pets",
+      "status": 200,
+      "body": { "ok": true, "route": "/pets", "method": "GET", "operationId": "listPets" }
+    },
+    {
+      "method": "POST",
+      "path": "/pets",
+      "status": 201,
+      "requestBody": { "name": "spot" },
+      "body": { "ok": true, "route": "/pets", "method": "POST", "operationId": "createPet" }
+    },
+    {
+      "method": "GET",
+      "path": "/pets/{id}",
+      "status": 200,
+      "body": { "ok": true, "route": "/pets/{id}", "method": "GET", "operationId": "getPet" }
+    }
+  ]
+}

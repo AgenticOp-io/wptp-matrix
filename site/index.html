@@ -204,8 +204,8 @@
       }
 
       Promise.all([
-        fetch("../data/matrix.v0.json").then((r) => r.json()),
-        fetch("../data/composer-paths.v0.json").then((r) => r.json()),
+        fetch("data/matrix.v0.json").then((r) => r.json()),
+        fetch("data/composer-paths.v0.json").then((r) => r.json()),
       ]).then(([matrix, paths]) => {
         renderStats(matrix, paths);
         renderFilters();

@@ -31,7 +31,9 @@ npm run site:validate    # static matrix site loads JSON
 npm run compose -- --path openapi-ir-hono --in fixtures/petstore-mini.openapi.json --out ./out --verify
 ```
 
-Open `site/index.html` in a browser (or serve the repo root) for the **12-edge** matrix + composer path viewer.
+Open `site/index.html` locally, or use **GitHub Pages** after enabling Pages on this repo (workflow `pages.yml` deploys `_site/` on push to `main`).
+
+Matrix viewer shows **18 edges** + **8 composer paths** with grade filters.
 
 **Optional gold smoke (local):** set `CHRYSALIS_ROOT` to a built Chrysalis checkout, then `npm run verify:harness` also runs `php-webir-hono` (`chrysalis status` on tiny-blog).
 ```

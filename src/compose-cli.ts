@@ -1,8 +1,10 @@
 #!/usr/bin/env node
 import { resolve } from "node:path";
 import { composeHarIrNextJs, composeOpenApiIrNextJs } from "./compose.js";
+import { composeHarIrFastify, composeOpenApiIrFastify } from "./compose-fastify.js";
 import { composeHarIrHono, composeOpenApiIrHono } from "./compose-hono.js";
 import { verifyComposedNextJsBronze } from "./verify-contract.js";
+import { verifyComposedFastifyBronze } from "./verify-fastify-bronze.js";
 import { verifyComposedHonoBronze } from "./verify-hono-bronze.js";
 
 const OPENAPI_ROUTES = [
@@ -19,7 +21,7 @@ const HAR_ROUTES = [
 
 function usage(): never {
   process.stderr.write(
-    "Usage: wptp-compose --path <openapi-ir-nextjs|har-ir-nextjs|openapi-ir-hono|har-ir-hono> --in <file> --out <dir> [--verify]\n",
+    "Usage: wptp-compose --path <openapi-ir-nextjs|har-ir-nextjs|openapi-ir-hono|har-ir-hono|openapi-ir-fastify|har-ir-fastify> --in <file> --out <dir> [--verify]\n",
   );
   process.exit(1);
 }
@@ -92,7 +94,7 @@ if (pathId === "openapi-ir-nextjs") {
     ),
   );
   if (verify) {
-    const v = verifyComposedHonoBronze(outDir, result, ["listPets", "createPet", "getPet"]);
+    const v = verifyComposedHonoBronze(outDir, result, result.handlerNames);
     if (!v.ok) {
       process.stderr.write(`${JSON.stringify(v, null, 2)}\n`);
       process.exit(1);
@@ -116,6 +118,52 @@ if (pathId === "openapi-ir-nextjs") {
   );
   if (verify) {
     const v = verifyComposedHonoBronze(outDir, result, result.handlerNames);
+    if (!v.ok) {
+      process.stderr.write(`${JSON.stringify(v, null, 2)}\n`);
+      process.exit(1);
+    }
+    console.error("contract verify: OK");
+  }
+} else if (pathId === "openapi-ir-fastify") {
+  const result = composeOpenApiIrFastify(inPath, outDir);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        pathId: result.pathId,
+        filesWritten: result.filesWritten,
+        irNodeCount: result.irNodeCount,
+        handlerNames: result.handlerNames,
+      },
+      null,
+      2,
+    ),
+  );
+  if (verify) {
+    const v = verifyComposedFastifyBronze(outDir, result, result.handlerNames);
+    if (!v.ok) {
+      process.stderr.write(`${JSON.stringify(v, null, 2)}\n`);
+      process.exit(1);
+    }
+    console.error("contract verify: OK");
+  }
+} else if (pathId === "har-ir-fastify") {
+  const result = composeHarIrFastify(inPath, outDir);
+  console.log(
+    JSON.stringify(
+      {
+        ok: true,
+        pathId: result.pathId,
+        filesWritten: result.filesWritten,
+        irNodeCount: result.irNodeCount,
+        handlerNames: result.handlerNames,
+      },
+      null,
+      2,
+    ),
+  );
+  if (verify) {
+    const v = verifyComposedFastifyBronze(outDir, result, result.handlerNames);
     if (!v.ok) {
       process.stderr.write(`${JSON.stringify(v, null, 2)}\n`);
       process.exit(1);

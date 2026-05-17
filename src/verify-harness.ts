@@ -3,9 +3,20 @@ import { join } from "node:path";
 import { assertIrDocumentV0, importWebIrBundleJson, summarizeLosses } from "@wptp/ir";
 import type { ComposeResult } from "./compose.js";
 import { composeHarIrNextJs, composeOpenApiIrNextJs } from "./compose.js";
+import {
+  composeHarIrFastify,
+  composeOpenApiIrFastify,
+  type ComposeFastifyResult,
+} from "./compose-fastify.js";
 import { composeHarIrHono, composeOpenApiIrHono, type ComposeHonoResult } from "./compose-hono.js";
+import { verifyComposedFastifyBronze, verifyComposedFastifyRuntime } from "./verify-fastify-bronze.js";
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
 import { runOptionalGoldPhpWebirHono } from "./verify-gold-chrysalis.js";
+import {
+  loadContractReplaySpec,
+  verifyComposedFastifyContractReplay,
+  verifyComposedHonoContractReplay,
+} from "./verify-replay.js";
 import { verifyComposedNextJsBronze, type ContractVerifyResult } from "./verify-contract.js";
 
 export type HarnessGrade = "bronze" | "silver" | "gold";
@@ -43,6 +54,28 @@ export const HARNESS_CASES: ReadonlyArray<HarnessCase> = [
   { id: "webir-neutral-ir", grade: "silver", description: "Chrysalis WebIR bundle → IR v0 (loss report)" },
   { id: "openapi-ir-hono", grade: "bronze", description: "OpenAPI → IR → @wptp/emit-hono stubs (runtime JSON)" },
   { id: "har-ir-hono", grade: "bronze", description: "HAR → IR → @wptp/emit-hono stubs (runtime JSON)" },
+  { id: "openapi-ir-fastify", grade: "bronze", description: "OpenAPI → IR → @wptp/emit-fastify stubs" },
+  { id: "har-ir-fastify", grade: "bronze", description: "HAR → IR → @wptp/emit-fastify stubs" },
+  {
+    id: "openapi-ir-hono-contract-gold",
+    grade: "gold",
+    description: "OpenAPI composed Hono + contract replay (no Chrysalis)",
+  },
+  {
+    id: "har-ir-hono-contract-gold",
+    grade: "gold",
+    description: "HAR composed Hono + contract replay (no Chrysalis)",
+  },
+  {
+    id: "openapi-ir-fastify-contract-gold",
+    grade: "gold",
+    description: "OpenAPI composed Fastify + contract replay (no Chrysalis)",
+  },
+  {
+    id: "har-ir-fastify-contract-gold",
+    grade: "gold",
+    description: "HAR composed Fastify + contract replay (no Chrysalis)",
+  },
   { id: "php-webir-hono", grade: "gold", description: "Chrysalis ingest + emit-hono + verify (monolith CI)" },
 ];
 
@@ -79,6 +112,62 @@ async function runBronzeHonoCompose(
     grade: "bronze",
     ok: contract.ok && runtime.ok,
     detail: `handlers=${compose.handlerNames.length} runtime=${runtime.ok}`,
+  };
+}
+
+async function runBronzeFastifyCompose(
+  id: string,
+  composeFn: (input: string, outDir: string) => ComposeFastifyResult,
+  inputPath: string,
+  outDir: string,
+  runtimeRoutes: ReadonlyArray<{ readonly method: string; readonly path: string; readonly status?: number }>,
+): Promise<HarnessRunResult> {
+  const compose = composeFn(inputPath, outDir);
+  const contract = verifyComposedFastifyBronze(outDir, compose, compose.handlerNames);
+  const runtime = await verifyComposedFastifyRuntime(outDir, runtimeRoutes);
+  return {
+    id,
+    grade: "bronze",
+    ok: contract.ok && runtime.ok,
+    detail: `handlers=${compose.handlerNames.length} runtime=${runtime.ok}`,
+  };
+}
+
+async function runContractGoldHono(
+  id: string,
+  composeFn: (input: string, outDir: string) => ComposeHonoResult,
+  inputPath: string,
+  outDir: string,
+  replayPath: string,
+): Promise<HarnessRunResult> {
+  const compose = composeFn(inputPath, outDir);
+  const bronze = verifyComposedHonoBronze(outDir, compose, compose.handlerNames);
+  const spec = loadContractReplaySpec(replayPath);
+  const replay = await verifyComposedHonoContractReplay(outDir, spec);
+  return {
+    id,
+    grade: "gold",
+    ok: bronze.ok && replay.ok,
+    detail: `bronze=${bronze.ok} replay=${replay.ok}`,
+  };
+}
+
+async function runContractGoldFastify(
+  id: string,
+  composeFn: (input: string, outDir: string) => ComposeFastifyResult,
+  inputPath: string,
+  outDir: string,
+  replayPath: string,
+): Promise<HarnessRunResult> {
+  const compose = composeFn(inputPath, outDir);
+  const bronze = verifyComposedFastifyBronze(outDir, compose, compose.handlerNames);
+  const spec = loadContractReplaySpec(replayPath);
+  const replay = await verifyComposedFastifyContractReplay(outDir, spec);
+  return {
+    id,
+    grade: "gold",
+    ok: bronze.ok && replay.ok,
+    detail: `bronze=${bronze.ok} replay=${replay.ok}`,
   };
 }
 
@@ -151,6 +240,76 @@ export async function runMatrixHarness(options: {
         { method: "POST", path: "/api/pets" },
         { method: "GET", path: "/api/pets/42" },
       ],
+    ),
+  );
+
+  results.push(
+    await runBronzeFastifyCompose(
+      "openapi-ir-fastify",
+      composeOpenApiIrFastify,
+      join(root, "petstore-mini.openapi.json"),
+      join(options.outDir, "openapi-fastify"),
+      [
+        { method: "GET", path: "/pets", status: 200 },
+        { method: "POST", path: "/pets", status: 201 },
+        { method: "GET", path: "/pets/{id}", status: 200 },
+      ],
+    ),
+  );
+
+  results.push(
+    await runBronzeFastifyCompose(
+      "har-ir-fastify",
+      composeHarIrFastify,
+      join(root, "mini.har.json"),
+      join(options.outDir, "har-fastify"),
+      [
+        { method: "GET", path: "/api/pets", status: 200 },
+        { method: "POST", path: "/api/pets", status: 201 },
+        { method: "GET", path: "/api/pets/42", status: 200 },
+      ],
+    ),
+  );
+
+  const replayDir = join(root, "replay");
+
+  results.push(
+    await runContractGoldHono(
+      "openapi-ir-hono-contract-gold",
+      composeOpenApiIrHono,
+      join(root, "petstore-mini.openapi.json"),
+      join(options.outDir, "openapi-hono-gold"),
+      join(replayDir, "petstore-openapi.replay.json"),
+    ),
+  );
+
+  results.push(
+    await runContractGoldHono(
+      "har-ir-hono-contract-gold",
+      composeHarIrHono,
+      join(root, "mini.har.json"),
+      join(options.outDir, "har-hono-gold"),
+      join(replayDir, "mini-har.replay.json"),
+    ),
+  );
+
+  results.push(
+    await runContractGoldFastify(
+      "openapi-ir-fastify-contract-gold",
+      composeOpenApiIrFastify,
+      join(root, "petstore-mini.openapi.json"),
+      join(options.outDir, "openapi-fastify-gold"),
+      join(replayDir, "petstore-openapi.replay.json"),
+    ),
+  );
+
+  results.push(
+    await runContractGoldFastify(
+      "har-ir-fastify-contract-gold",
+      composeHarIrFastify,
+      join(root, "mini.har.json"),
+      join(options.outDir, "har-fastify-gold"),
+      join(replayDir, "mini-har.replay.json"),
     ),
   );
 
