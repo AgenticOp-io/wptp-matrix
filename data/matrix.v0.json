@@ -123,8 +123,8 @@
       "irHub": "theorem6/wptp-ir",
       "evidence": {
         "corpus": "fixtures/petstore-mini.openapi.json",
-        "ci": "wptp-matrix verify:harness with CHRYSALIS_ROOT; chrysalis emit-hono bundle test",
-        "harness": "openapi-ir-hono compose + bronze handler stubs",
+        "ci": "wptp-matrix npm test + verify:harness",
+        "harness": "@wptp/emit-hono bronze + app.fetch runtime JSON",
         "notes": "Stub handlers only; not Gold replay."
       }
     },

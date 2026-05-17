@@ -8,7 +8,7 @@ const fixtureRoot = join(import.meta.dirname, "..", "fixtures");
 const outDir = mkdtempSync(join(tmpdir(), "wptp-harness-"));
 
 try {
-  const results = runMatrixHarness({ fixtureRoot, outDir });
+  const results = await runMatrixHarness({ fixtureRoot, outDir });
   const summary = harnessSummary(results);
   console.log(JSON.stringify({ ok: summary.ok, results }, null, 2));
   if (!summary.ok) {

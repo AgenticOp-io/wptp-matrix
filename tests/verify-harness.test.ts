@@ -12,10 +12,10 @@ afterEach(() => {
 });
 
 describe("matrix verify harness", () => {
-  it("runs bronze compose + silver WebIR import cases", () => {
+  it("runs bronze compose + silver WebIR import cases", async () => {
     const outDir = mkdtempSync(join(tmpdir(), "wptp-harness-"));
     tempDirs.push(outDir);
-    const results = runMatrixHarness({ fixtureRoot, outDir });
+    const results = await runMatrixHarness({ fixtureRoot, outDir });
     const ids = results.map((r) => r.id).sort();
     expect(ids).toContain("har-ir-nextjs");
     expect(ids).toContain("openapi-ir-nextjs");

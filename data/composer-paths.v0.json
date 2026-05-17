@@ -26,14 +26,23 @@
     },
     {
       "id": "openapi-ir-hono",
-      "description": "OpenAPI contract to Hono TypeScript via IR and WebIR export",
+      "description": "OpenAPI contract to Hono TypeScript via IR (@wptp/emit-hono bronze stubs)",
       "grade": "bronze",
       "steps": [
         { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
-        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
-        { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
+        { "repo": "theorem6/wptp-emit-hono", "action": "emitHonoBronzeProject" }
       ],
-      "matrixEdges": ["openapi-to-wptp-ir", "ir-v0-to-webir-bundle", "openapi-to-hono-ts"]
+      "matrixEdges": ["openapi-to-wptp-ir", "openapi-to-hono-ts"]
+    },
+    {
+      "id": "har-ir-hono",
+      "description": "Browser HAR trace to Hono TypeScript via IR (@wptp/emit-hono bronze stubs)",
+      "grade": "bronze",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
+        { "repo": "theorem6/wptp-emit-hono", "action": "emitHonoBronzeProject" }
+      ],
+      "matrixEdges": ["browser-trace-to-wptp-ir", "browser-to-hono-ts"]
     },
     {
       "id": "php-webir-hono",

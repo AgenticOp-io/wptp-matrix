@@ -18,7 +18,7 @@ export declare const HARNESS_CASES: ReadonlyArray<HarnessCase>;
 export declare function runMatrixHarness(options: {
     readonly fixtureRoot: string;
     readonly outDir: string;
-}): ReadonlyArray<HarnessRunResult>;
+}): Promise<ReadonlyArray<HarnessRunResult>>;
 export declare function harnessSummary(results: ReadonlyArray<HarnessRunResult>): {
     ok: boolean;
     failed: string[];
