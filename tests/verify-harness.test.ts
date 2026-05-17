@@ -18,7 +18,9 @@ describe("matrix verify harness", () => {
     const results = await runMatrixHarness({ fixtureRoot, outDir });
     const ids = results.map((r) => r.id).sort();
     expect(ids).toContain("har-ir-nextjs");
+    expect(ids).toContain("har-ir-hono");
     expect(ids).toContain("openapi-ir-nextjs");
+    expect(ids).toContain("openapi-ir-hono");
     expect(ids).toContain("webir-neutral-ir");
     const summary = harnessSummary(results);
     expect(summary.ok).toBe(true);

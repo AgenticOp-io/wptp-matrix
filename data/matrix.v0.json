@@ -1,7 +1,7 @@
 {
   "schemaVersion": "0.1.0",
   "program": "Web Platform Translation Program",
-  "updatedAt": "2026-05-16",
+  "updatedAt": "2026-05-17",
   "edges": [
     {
       "id": "php-legacy-to-hono-ts",
@@ -115,8 +115,8 @@
       },
       "target": {
         "family": "hono-typescript",
-        "component": "chrysalis-emit-hono",
-        "repo": "theorem6/chrysalis"
+        "component": "wptp-emit-hono",
+        "repo": "theorem6/wptp-emit-hono"
       },
       "grade": "bronze",
       "status": "supported",
@@ -124,8 +124,8 @@
       "evidence": {
         "corpus": "fixtures/petstore-mini.openapi.json",
         "ci": "wptp-matrix npm test + verify:harness",
-        "harness": "@wptp/emit-hono bronze + app.fetch runtime JSON",
-        "notes": "Stub handlers only; not Gold replay."
+        "harness": "openapi-ir-hono (@wptp/emit-hono + app.fetch runtime JSON)",
+        "notes": "Stub handlers only; not Gold replay. PHP depth uses php-webir-hono (Chrysalis)."
       }
     },
     {
@@ -210,6 +210,28 @@
         "corpus": "fixtures/mini.har.json",
         "ci": "wptp-matrix npm test + verify:harness",
         "harness": "wptp-matrix bronze contract (har-ir-nextjs)",
+        "notes": "Customer-owned traces only; structural stubs."
+      }
+    },
+    {
+      "id": "browser-to-hono-ts",
+      "source": {
+        "family": "browser-trace",
+        "component": "wptp-adapter-browser",
+        "repo": "theorem6/wptp-adapter-browser"
+      },
+      "target": {
+        "family": "hono-typescript",
+        "component": "wptp-emit-hono",
+        "repo": "theorem6/wptp-emit-hono"
+      },
+      "grade": "bronze",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/mini.har.json",
+        "ci": "wptp-matrix npm test + verify:harness",
+        "harness": "har-ir-hono (@wptp/emit-hono + app.fetch runtime JSON)",
         "notes": "Customer-owned traces only; structural stubs."
       }
     },

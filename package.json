@@ -1,6 +1,6 @@
 {
   "name": "@wptp/matrix",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "WPTP public compatibility matrix (source x target x verification grade)",
   "type": "module",
   "license": "MIT",

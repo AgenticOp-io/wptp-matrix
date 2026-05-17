@@ -2,7 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { assertIrDocumentV0, importWebIrBundleJson, summarizeLosses } from "@wptp/ir";
 import { composeHarIrNextJs, composeOpenApiIrNextJs } from "./compose.js";
-import { composeOpenApiIrHono } from "./compose-hono.js";
+import { composeHarIrHono, composeOpenApiIrHono } from "./compose-hono.js";
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
 import { verifyComposedNextJsBronze } from "./verify-contract.js";
 const OPENAPI_ROUTES = [
@@ -21,6 +21,7 @@ export const HARNESS_CASES = [
     { id: "har-ir-nextjs", grade: "bronze", description: "HAR → IR → Next.js contract stubs" },
     { id: "webir-neutral-ir", grade: "silver", description: "Chrysalis WebIR bundle → IR v0 (loss report)" },
     { id: "openapi-ir-hono", grade: "bronze", description: "OpenAPI → IR → @wptp/emit-hono stubs (runtime JSON)" },
+    { id: "har-ir-hono", grade: "bronze", description: "HAR → IR → @wptp/emit-hono stubs (runtime JSON)" },
     { id: "php-webir-hono", grade: "gold", description: "Chrysalis ingest + emit-hono + verify (monolith CI)" },
 ];
 function runBronzeCompose(id, composeFn, inputPath, outDir, routes) {
@@ -32,6 +33,17 @@ function runBronzeCompose(id, composeFn, inputPath, outDir, routes) {
         ok: contract.ok,
         detail: `files=${compose.filesWritten.length} skipped=${compose.skippedEmit}`,
         contract,
+    };
+}
+async function runBronzeHonoCompose(id, composeFn, inputPath, outDir, runtimeRoutes) {
+    const compose = composeFn(inputPath, outDir);
+    const contract = verifyComposedHonoBronze(outDir, compose, compose.handlerNames);
+    const runtime = await verifyComposedHonoRuntime(outDir, runtimeRoutes);
+    return {
+        id,
+        grade: "bronze",
+        ok: contract.ok && runtime.ok,
+        detail: `handlers=${compose.handlerNames.length} runtime=${runtime.ok}`,
     };
 }
 function runSilverWebIrImport(bundlePath) {
@@ -54,20 +66,16 @@ export async function runMatrixHarness(options) {
     results.push(runBronzeCompose("openapi-ir-nextjs", composeOpenApiIrNextJs, join(root, "petstore-mini.openapi.json"), join(options.outDir, "openapi-nextjs"), OPENAPI_ROUTES));
     results.push(runBronzeCompose("har-ir-nextjs", composeHarIrNextJs, join(root, "mini.har.json"), join(options.outDir, "har-nextjs"), HAR_ROUTES));
     results.push(runSilverWebIrImport(join(root, "minimal-route.webir.bundle.json")));
-    const honoOut = join(options.outDir, "openapi-hono");
-    const hono = composeOpenApiIrHono(join(root, "petstore-mini.openapi.json"), honoOut);
-    const honoVerify = verifyComposedHonoBronze(honoOut, hono, ["listPets", "createPet", "getPet"]);
-    const honoRuntime = await verifyComposedHonoRuntime(honoOut, [
+    results.push(await runBronzeHonoCompose("openapi-ir-hono", composeOpenApiIrHono, join(root, "petstore-mini.openapi.json"), join(options.outDir, "openapi-hono"), [
         { method: "GET", path: "/pets" },
         { method: "POST", path: "/pets" },
         { method: "GET", path: "/pets/{id}" },
-    ]);
-    results.push({
-        id: "openapi-ir-hono",
-        grade: "bronze",
-        ok: honoVerify.ok && honoRuntime.ok,
-        detail: `handlers=${hono.handlerNames.length} runtime=${honoRuntime.ok}`,
-    });
+    ]));
+    results.push(await runBronzeHonoCompose("har-ir-hono", composeHarIrHono, join(root, "mini.har.json"), join(options.outDir, "har-hono"), [
+        { method: "GET", path: "/api/pets" },
+        { method: "POST", path: "/api/pets" },
+        { method: "GET", path: "/api/pets/42" },
+    ]));
     return results;
 }
 export function harnessSummary(results) {

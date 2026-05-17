@@ -26,6 +26,8 @@ Public **compatibility matrix** for the [Web Platform Translation Program](https
 npm install
 npm test
 npm run validate
+npm run verify:harness   # bronze compose + silver WebIR import (+ runtime Hono checks)
+npm run compose -- --path openapi-ir-hono --in fixtures/petstore-mini.openapi.json --out ./out --verify
 ```
 
 ## Related
