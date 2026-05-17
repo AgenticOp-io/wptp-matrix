@@ -22,6 +22,7 @@ describe("matrix verify harness", () => {
     expect(ids).toContain("openapi-ir-nextjs");
     expect(ids).toContain("openapi-ir-hono");
     expect(ids).toContain("webir-neutral-ir");
+    expect(ids).toContain("php-webir-hono");
     const summary = harnessSummary(results);
     expect(summary.ok).toBe(true);
     expect(summary.failed).toEqual([]);

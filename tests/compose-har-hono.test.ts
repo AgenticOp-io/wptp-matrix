@@ -25,9 +25,9 @@ describe("har-ir-hono compose (@wptp/emit-hono)", () => {
     expect(verify.ok).toBe(true);
 
     const runtime = await verifyComposedHonoRuntime(outDir, [
-      { method: "GET", path: "/api/pets" },
-      { method: "POST", path: "/api/pets" },
-      { method: "GET", path: "/api/pets/42" },
+      { method: "GET", path: "/api/pets", status: 200 },
+      { method: "POST", path: "/api/pets", status: 201 },
+      { method: "GET", path: "/api/pets/42", status: 200 },
     ]);
     expect(runtime.ok).toBe(true);
   });

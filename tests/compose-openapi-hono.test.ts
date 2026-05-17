@@ -24,8 +24,9 @@ describe("openapi-ir-hono compose (@wptp/emit-hono)", () => {
     expect(verify.ok).toBe(true);
 
     const runtime = await verifyComposedHonoRuntime(outDir, [
-      { method: "GET", path: "/pets" },
-      { method: "GET", path: "/pets/{id}" },
+      { method: "GET", path: "/pets", status: 200 },
+      { method: "POST", path: "/pets", status: 201 },
+      { method: "GET", path: "/pets/{id}", status: 200 },
     ]);
     expect(runtime.ok).toBe(true);
   });

@@ -5,6 +5,7 @@ import type { ComposeResult } from "./compose.js";
 import { composeHarIrNextJs, composeOpenApiIrNextJs } from "./compose.js";
 import { composeHarIrHono, composeOpenApiIrHono, type ComposeHonoResult } from "./compose-hono.js";
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
+import { runOptionalGoldPhpWebirHono } from "./verify-gold-chrysalis.js";
 import { verifyComposedNextJsBronze, type ContractVerifyResult } from "./verify-contract.js";
 
 export type HarnessGrade = "bronze" | "silver" | "gold";
@@ -68,7 +69,7 @@ async function runBronzeHonoCompose(
   composeFn: (input: string, outDir: string) => ComposeHonoResult,
   inputPath: string,
   outDir: string,
-  runtimeRoutes: ReadonlyArray<{ readonly method: string; readonly path: string }>,
+  runtimeRoutes: ReadonlyArray<{ readonly method: string; readonly path: string; readonly status?: number }>,
 ): Promise<HarnessRunResult> {
   const compose = composeFn(inputPath, outDir);
   const contract = verifyComposedHonoBronze(outDir, compose, compose.handlerNames);
@@ -132,9 +133,9 @@ export async function runMatrixHarness(options: {
       join(root, "petstore-mini.openapi.json"),
       join(options.outDir, "openapi-hono"),
       [
-        { method: "GET", path: "/pets" },
-        { method: "POST", path: "/pets" },
-        { method: "GET", path: "/pets/{id}" },
+        { method: "GET", path: "/pets", status: 200 },
+        { method: "POST", path: "/pets", status: 201 },
+        { method: "GET", path: "/pets/{id}", status: 200 },
       ],
     ),
   );
@@ -153,10 +154,14 @@ export async function runMatrixHarness(options: {
     ),
   );
 
+  results.push(runOptionalGoldPhpWebirHono(process.env.CHRYSALIS_ROOT));
+
   return results;
 }
 
 export function harnessSummary(results: ReadonlyArray<HarnessRunResult>): { ok: boolean; failed: string[] } {
-  const failed = results.filter((r) => !r.ok).map((r) => r.id);
+  const failed = results
+    .filter((r) => !r.ok && !r.detail?.startsWith("skipped"))
+    .map((r) => r.id);
   return { ok: failed.length === 0, failed };
 }

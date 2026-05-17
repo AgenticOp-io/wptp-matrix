@@ -2,51 +2,216 @@
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>WPTP compatibility matrix</title>
     <style>
-      body { font-family: system-ui, sans-serif; margin: 2rem; max-width: 960px; }
-      table { border-collapse: collapse; width: 100%; }
-      th, td { border: 1px solid #ccc; padding: 0.5rem; text-align: left; }
-      .gold { background: #e8f5e9; }
-      .silver { background: #fff8e1; }
-      .bronze { background: #fbe9e7; }
+      :root {
+        --bg: #0f1419;
+        --panel: #1a2332;
+        --text: #e7ecf3;
+        --muted: #9aa7b8;
+        --gold: #2e7d32;
+        --silver: #f9a825;
+        --bronze: #bf360c;
+        --border: #2d3a4d;
+      }
+      * { box-sizing: border-box; }
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        margin: 0;
+        padding: 2rem;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.5;
+      }
+      main { max-width: 1100px; margin: 0 auto; }
+      h1 { font-size: 1.75rem; margin: 0 0 0.25rem; }
+      .lead { color: var(--muted); margin: 0 0 1.5rem; }
+      .stats {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        margin-bottom: 1.5rem;
+      }
+      .stat {
+        background: var(--panel);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.75rem 1rem;
+        min-width: 8rem;
+      }
+      .stat strong { display: block; font-size: 1.5rem; }
+      .filters { margin-bottom: 1rem; }
+      .filters button {
+        background: var(--panel);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 0.35rem 0.75rem;
+        margin-right: 0.35rem;
+        cursor: pointer;
+      }
+      .filters button.active { outline: 2px solid #5c9ded; }
+      section { margin-bottom: 2rem; }
+      h2 { font-size: 1.15rem; margin: 0 0 0.75rem; }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+        background: var(--panel);
+        border-radius: 8px;
+        overflow: hidden;
+      }
+      th, td {
+        border-bottom: 1px solid var(--border);
+        padding: 0.55rem 0.65rem;
+        text-align: left;
+        vertical-align: top;
+      }
+      th { background: #243044; color: var(--muted); font-weight: 600; }
+      tr.grade-gold td:first-child { border-left: 4px solid var(--gold); }
+      tr.grade-silver td:first-child { border-left: 4px solid var(--silver); }
+      tr.grade-bronze td:first-child { border-left: 4px solid var(--bronze); }
+      code { font-size: 0.85em; }
+      .muted { color: var(--muted); font-size: 0.85em; }
+      a { color: #7eb6ff; }
     </style>
   </head>
   <body>
-    <h1>Web Platform Translation Program</h1>
-    <p>Read-only view of <code>data/matrix.v0.json</code>. Gold rows require harness + corpus or CI in the JSON.</p>
-    <table id="matrix">
-      <thead>
-        <tr>
-          <th>Source</th>
-          <th>Target</th>
-          <th>Grade</th>
-          <th>Status</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
+    <main>
+      <h1>Web Platform Translation Program</h1>
+      <p class="lead">
+        Live view of <code>data/matrix.v0.json</code> and <code>data/composer-paths.v0.json</code>.
+        Gold rows require harness + corpus or CI in the JSON.
+      </p>
+      <div id="stats" class="stats"></div>
+      <div class="filters" id="filters" aria-label="Filter by grade"></div>
+      <section>
+        <h2>Compatibility edges</h2>
+        <table id="matrix">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Source</th>
+              <th>Target</th>
+              <th>Grade</th>
+              <th>Status</th>
+              <th>Evidence</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+      <section>
+        <h2>Composer paths</h2>
+        <table id="paths">
+          <thead>
+            <tr>
+              <th>Path ID</th>
+              <th>Grade</th>
+              <th>Steps</th>
+              <th>Matrix edges</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </section>
+    </main>
     <script>
-      fetch("../data/matrix.v0.json")
-        .then((r) => r.json())
-        .then((m) => {
-          const tbody = document.querySelector("#matrix tbody");
-          for (const e of m.edges) {
-            const tr = document.createElement("tr");
-            tr.className = e.grade;
-            tr.innerHTML =
-              "<td>" +
-              e.source.family +
-              "</td><td>" +
-              e.target.family +
-              "</td><td>" +
-              e.grade +
-              "</td><td>" +
-              e.status +
-              "</td>";
-            tbody.appendChild(tr);
-          }
+      const gradeFilter = { value: "all" };
+
+      function el(tag, text, className) {
+        const n = document.createElement(tag);
+        if (text != null) n.textContent = text;
+        if (className) n.className = className;
+        return n;
+      }
+
+      function renderStats(matrix, paths) {
+        const root = document.getElementById("stats");
+        root.replaceChildren();
+        const byGrade = (g) => matrix.edges.filter((e) => e.grade === g).length;
+        [
+          ["Edges", matrix.edges.length],
+          ["Gold", byGrade("gold")],
+          ["Silver", byGrade("silver")],
+          ["Bronze", byGrade("bronze")],
+          ["Composer paths", paths.paths.length],
+        ].forEach(([label, n]) => {
+          const box = el("div", null, "stat");
+          box.appendChild(el("strong", String(n)));
+          box.appendChild(document.createTextNode(label));
+          root.appendChild(box);
         });
+      }
+
+      function renderFilters() {
+        const root = document.getElementById("filters");
+        root.replaceChildren(el("span", "Filter: ", "muted"));
+        for (const g of ["all", "gold", "silver", "bronze"]) {
+          const btn = el("button", g === "all" ? "All" : g.charAt(0).toUpperCase() + g.slice(1));
+          if (gradeFilter.value === g) btn.classList.add("active");
+          btn.onclick = () => {
+            gradeFilter.value = g;
+            renderFilters();
+            renderMatrix(window.__matrix);
+          };
+          root.appendChild(btn);
+        }
+      }
+
+      function evidenceText(e) {
+        const ev = e.evidence ?? {};
+        const parts = [];
+        if (ev.harness) parts.push("harness: " + ev.harness);
+        if (ev.ci) parts.push("ci: " + ev.ci);
+        if (ev.corpus) parts.push("corpus: " + ev.corpus);
+        if (ev.notes) parts.push(ev.notes);
+        return parts.join(" · ") || "—";
+      }
+
+      function renderMatrix(matrix) {
+        window.__matrix = matrix;
+        const tbody = document.querySelector("#matrix tbody");
+        tbody.replaceChildren();
+        for (const e of matrix.edges) {
+          if (gradeFilter.value !== "all" && e.grade !== gradeFilter.value) continue;
+          const tr = el("tr");
+          tr.classList.add("grade-" + e.grade);
+          tr.appendChild(el("td", e.id));
+          tr.appendChild(el("td", e.source.family + " / " + (e.source.component ?? "")));
+          tr.appendChild(el("td", e.target.family + " / " + (e.target.component ?? "")));
+          tr.appendChild(el("td", e.grade));
+          tr.appendChild(el("td", e.status));
+          tr.appendChild(el("td", evidenceText(e)));
+          tbody.appendChild(tr);
+        }
+      }
+
+      function renderPaths(paths) {
+        const tbody = document.querySelector("#paths tbody");
+        tbody.replaceChildren();
+        for (const p of paths.paths) {
+          const tr = el("tr");
+          tr.classList.add("grade-" + p.grade);
+          tr.appendChild(el("td", p.id));
+          tr.appendChild(el("td", p.grade));
+          const steps = p.steps.map((s) => s.repo.split("/")[1] + ": " + s.action).join(" → ");
+          tr.appendChild(el("td", steps));
+          tr.appendChild(el("td", (p.matrixEdges ?? []).join(", ")));
+          tbody.appendChild(tr);
+        }
+      }
+
+      Promise.all([
+        fetch("../data/matrix.v0.json").then((r) => r.json()),
+        fetch("../data/composer-paths.v0.json").then((r) => r.json()),
+      ]).then(([matrix, paths]) => {
+        renderStats(matrix, paths);
+        renderFilters();
+        renderMatrix(matrix);
+        renderPaths(paths);
+      });
     </script>
   </body>
 </html>

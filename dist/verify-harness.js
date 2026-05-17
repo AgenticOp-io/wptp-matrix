@@ -4,6 +4,7 @@ import { assertIrDocumentV0, importWebIrBundleJson, summarizeLosses } from "@wpt
 import { composeHarIrNextJs, composeOpenApiIrNextJs } from "./compose.js";
 import { composeHarIrHono, composeOpenApiIrHono } from "./compose-hono.js";
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
+import { runOptionalGoldPhpWebirHono } from "./verify-gold-chrysalis.js";
 import { verifyComposedNextJsBronze } from "./verify-contract.js";
 const OPENAPI_ROUTES = [
     { path: "/pets", method: "GET", file: "app/pets/route.ts" },
@@ -67,18 +68,21 @@ export async function runMatrixHarness(options) {
     results.push(runBronzeCompose("har-ir-nextjs", composeHarIrNextJs, join(root, "mini.har.json"), join(options.outDir, "har-nextjs"), HAR_ROUTES));
     results.push(runSilverWebIrImport(join(root, "minimal-route.webir.bundle.json")));
     results.push(await runBronzeHonoCompose("openapi-ir-hono", composeOpenApiIrHono, join(root, "petstore-mini.openapi.json"), join(options.outDir, "openapi-hono"), [
-        { method: "GET", path: "/pets" },
-        { method: "POST", path: "/pets" },
-        { method: "GET", path: "/pets/{id}" },
+        { method: "GET", path: "/pets", status: 200 },
+        { method: "POST", path: "/pets", status: 201 },
+        { method: "GET", path: "/pets/{id}", status: 200 },
     ]));
     results.push(await runBronzeHonoCompose("har-ir-hono", composeHarIrHono, join(root, "mini.har.json"), join(options.outDir, "har-hono"), [
         { method: "GET", path: "/api/pets" },
         { method: "POST", path: "/api/pets" },
         { method: "GET", path: "/api/pets/42" },
     ]));
+    results.push(runOptionalGoldPhpWebirHono(process.env.CHRYSALIS_ROOT));
     return results;
 }
 export function harnessSummary(results) {
-    const failed = results.filter((r) => !r.ok).map((r) => r.id);
+    const failed = results
+        .filter((r) => !r.ok && !r.detail?.startsWith("skipped"))
+        .map((r) => r.id);
     return { ok: failed.length === 0, failed };
 }

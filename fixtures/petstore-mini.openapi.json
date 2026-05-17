@@ -3,11 +3,23 @@
   "info": { "title": "Petstore Mini", "version": "1.0.0" },
   "paths": {
     "/pets": {
-      "get": { "operationId": "listPets", "summary": "List pets" },
-      "post": { "operationId": "createPet", "summary": "Create pet" }
+      "get": {
+        "operationId": "listPets",
+        "summary": "List pets",
+        "responses": { "200": { "description": "Pet list" } }
+      },
+      "post": {
+        "operationId": "createPet",
+        "summary": "Create pet",
+        "responses": { "201": { "description": "Created" } }
+      }
     },
     "/pets/{id}": {
-      "get": { "operationId": "getPet", "summary": "Get pet by id" }
+      "get": {
+        "operationId": "getPet",
+        "summary": "Get pet by id",
+        "responses": { "200": { "description": "Pet" } }
+      }
     }
   }
 }

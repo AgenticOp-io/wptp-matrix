@@ -71,7 +71,7 @@ export function ensureComposedHonoDeps(outDir: string): void {
 /** Runtime smoke: app.fetch returns JSON stub bodies (no server process). */
 export async function verifyComposedHonoRuntime(
   outDir: string,
-  routes: ReadonlyArray<{ readonly method: string; readonly path: string }>,
+  routes: ReadonlyArray<{ readonly method: string; readonly path: string; readonly status?: number }>,
 ): Promise<{ ok: boolean; checks: ContractCheck[] }> {
   const checks: ContractCheck[] = [];
   try {
@@ -79,15 +79,22 @@ export async function verifyComposedHonoRuntime(
     const mod = await import(pathToFileURL(join(outDir, "src/app.ts")).href);
     const app = mod.app as { fetch: (req: Request) => Promise<Response> };
     for (const route of routes) {
+      const expectedStatus = route.status ?? (route.method.toUpperCase() === "POST" ? 201 : 200);
       const fetchPath = irPathToFetchPath(route.path);
       const url = `http://127.0.0.1${fetchPath}`;
-      const res = await app.fetch(new Request(url, { method: route.method }));
+      const init: RequestInit = { method: route.method };
+      if (["POST", "PUT", "PATCH"].includes(route.method.toUpperCase())) {
+        init.headers = { "content-type": "application/json" };
+        init.body = JSON.stringify({ probe: true });
+      }
+      const res = await app.fetch(new Request(url, init));
       checks.push({
         name: `runtime ${route.method} ${route.path} status`,
-        ok: res.status === 200,
-        detail: String(res.status),
+        ok: res.status === expectedStatus,
+        detail: `${res.status} (expected ${expectedStatus})`,
       });
-      const body = (await res.json()) as { ok?: boolean; route?: string };
+      if (expectedStatus === 204) continue;
+      const body = (await res.json()) as { ok?: boolean; route?: string; body?: unknown };
       checks.push({
         name: `runtime ${route.method} ${route.path} body`,
         ok: body.ok === true && body.route === route.path,

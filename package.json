@@ -1,6 +1,6 @@
 {
   "name": "@wptp/matrix",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "WPTP public compatibility matrix (source x target x verification grade)",
   "type": "module",
   "license": "MIT",
@@ -18,7 +18,8 @@
     "verify:harness": "tsx src/verify-harness-cli.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "validate": "tsx src/cli-validate.ts"
+    "validate": "tsx src/cli-validate.ts",
+    "site:validate": "node scripts/site-validate.mjs"
   },
   "exports": {
     ".": {
@@ -31,11 +32,11 @@
     }
   },
   "dependencies": {
-    "@wptp/ir": "github:theorem6/wptp-ir#v0.1.2",
-    "@wptp/adapter-openapi": "github:theorem6/wptp-adapter-openapi#v0.1.0",
+    "@wptp/ir": "github:theorem6/wptp-ir#v0.1.3",
+    "@wptp/adapter-openapi": "github:theorem6/wptp-adapter-openapi#v0.1.1",
     "@wptp/adapter-browser": "github:theorem6/wptp-adapter-browser#v0.1.0",
     "@wptp/emit-nextjs": "github:theorem6/wptp-emit-nextjs#v0.1.0",
-    "@wptp/emit-hono": "github:theorem6/wptp-emit-hono#v0.1.0"
+    "@wptp/emit-hono": "github:theorem6/wptp-emit-hono#v0.1.1"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",

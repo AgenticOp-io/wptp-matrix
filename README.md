@@ -18,7 +18,7 @@ Public **compatibility matrix** for the [Web Platform Translation Program](https
 ## Non-goals
 
 - Running verify or ingest (see Chrysalis and adapter repos).
-- Hosting a public website (JSON in-repo for now; site is optional later).
+- Hosting a public website beyond the static viewer in `site/` (GitHub Pages wiring is optional).
 
 ## Quick start
 
@@ -27,7 +27,13 @@ npm install
 npm test
 npm run validate
 npm run verify:harness   # bronze compose + silver WebIR import (+ runtime Hono checks)
+npm run site:validate    # static matrix site loads JSON
 npm run compose -- --path openapi-ir-hono --in fixtures/petstore-mini.openapi.json --out ./out --verify
+```
+
+Open `site/index.html` in a browser (or serve the repo root) for the **12-edge** matrix + composer path viewer.
+
+**Optional gold smoke (local):** set `CHRYSALIS_ROOT` to a built Chrysalis checkout, then `npm run verify:harness` also runs `php-webir-hono` (`chrysalis status` on tiny-blog).
 ```
 
 ## Related

@@ -12,6 +12,7 @@ export declare function ensureComposedHonoDeps(outDir: string): void;
 export declare function verifyComposedHonoRuntime(outDir: string, routes: ReadonlyArray<{
     readonly method: string;
     readonly path: string;
+    readonly status?: number;
 }>): Promise<{
     ok: boolean;
     checks: ContractCheck[];
