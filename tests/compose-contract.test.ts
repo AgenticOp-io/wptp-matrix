@@ -18,7 +18,7 @@ describe("bronze contract verify (openapi-ir-nextjs)", () => {
     tempDirs.push(outDir);
     const compose = composeOpenApiIrNextJs(fixtureOpenApi, outDir);
     expect(compose.pathId).toBe("openapi-ir-nextjs");
-    expect(compose.filesWritten.sort()).toEqual(["app/pets/route.ts", "app/pets/{id}/route.ts"].sort());
+    expect([...compose.filesWritten].sort()).toEqual(["app/pets/route.ts", "app/pets/{id}/route.ts"].sort());
     expect(compose.skippedEmit).toBe(0);
 
     const verify = verifyComposedNextJsBronze(outDir, compose, [

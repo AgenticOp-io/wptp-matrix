@@ -18,7 +18,7 @@ describe("bronze contract verify (har-ir-nextjs)", () => {
     tempDirs.push(outDir);
     const compose = composeHarIrNextJs(fixtureHar, outDir);
     expect(compose.pathId).toBe("har-ir-nextjs");
-    expect(compose.filesWritten.sort()).toEqual(
+    expect([...compose.filesWritten].sort()).toEqual(
       ["app/api/pets/route.ts", "app/api/pets/42/route.ts"].sort(),
     );
 
