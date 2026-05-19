@@ -104,6 +104,28 @@
         { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
       ],
       "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-hono-chrysalis-silver"]
+    },
+    {
+      "id": "openapi-ir-nextjs-chrysalis",
+      "description": "OpenAPI → IR → WebIR → @wptp/emit-nextjs (silver, Chrysalis WebIR bridge)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-nextjs" }
+      ],
+      "matrixEdges": ["openapi-to-wptp-ir", "openapi-composed-nextjs-chrysalis-silver"]
+    },
+    {
+      "id": "har-ir-nextjs-chrysalis",
+      "description": "HAR → IR → WebIR → @wptp/emit-nextjs (silver, Chrysalis WebIR bridge)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-nextjs" }
+      ],
+      "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-nextjs-chrysalis-silver"]
     }
   ]
 }

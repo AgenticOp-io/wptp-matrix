@@ -429,6 +429,50 @@
         "harness": "har-ir-hono-chrysalis",
         "notes": "Requires CHRYSALIS_ROOT; customer-owned traces only."
       }
+    },
+    {
+      "id": "openapi-composed-nextjs-chrysalis-silver",
+      "source": {
+        "family": "openapi-contract",
+        "component": "wptp-adapter-openapi",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "target": {
+        "family": "nextjs-route-handlers",
+        "component": "wptp-emit-nextjs",
+        "repo": "theorem6/wptp-emit-nextjs"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/petstore-mini.openapi.json",
+        "ci": "chrysalis wptp-silver-nextjs-harness + wptp-matrix verify:harness",
+        "harness": "openapi-ir-nextjs-chrysalis",
+        "notes": "CHRYSALIS_ROOT + WPTP_EMIT_NEXTJS_ROOT; WebIR bundle + emit-webir-bundle-nextjs."
+      }
+    },
+    {
+      "id": "har-composed-nextjs-chrysalis-silver",
+      "source": {
+        "family": "browser-trace",
+        "component": "wptp-adapter-browser",
+        "repo": "theorem6/wptp-adapter-browser"
+      },
+      "target": {
+        "family": "nextjs-route-handlers",
+        "component": "wptp-emit-nextjs",
+        "repo": "theorem6/wptp-emit-nextjs"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/mini.har.json",
+        "ci": "chrysalis wptp-silver-nextjs-harness + wptp-matrix verify:harness",
+        "harness": "har-ir-nextjs-chrysalis",
+        "notes": "CHRYSALIS_ROOT + customer-owned HAR only."
+      }
     }
   ]
 }

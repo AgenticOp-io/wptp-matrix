@@ -3,6 +3,7 @@ import { tmpdir } from "node:os";
 import { join } from "node:path";
 import type { HarnessRunResult } from "./verify-harness.js";
 import { composeHarIrHonoChrysalis, composeOpenApiIrHonoChrysalis } from "./compose-chrysalis-hono.js";
+import { composeHarIrNextJsChrysalis, composeOpenApiIrNextJsChrysalis } from "./compose-chrysalis-nextjs.js";
 
 function runSilverCompose(
   id: string,
@@ -55,6 +56,40 @@ export function runSilverHarIrHonoChrysalis(
   return runSilverCompose(
     "har-ir-hono-chrysalis",
     (input, out, chrysalis) => composeHarIrHonoChrysalis(input, out, { chrysalisRoot: chrysalis }),
+    harPath,
+    chrysalisRoot,
+  );
+}
+
+export function runSilverOpenApiIrNextJsChrysalis(
+  openapiPath: string,
+  chrysalisRoot: string | undefined,
+  wptpEmitNextJsRoot?: string,
+): HarnessRunResult {
+  return runSilverCompose(
+    "openapi-ir-nextjs-chrysalis",
+    (input, out, chrysalis) =>
+      composeOpenApiIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+      }),
+    openapiPath,
+    chrysalisRoot,
+  );
+}
+
+export function runSilverHarIrNextJsChrysalis(
+  harPath: string,
+  chrysalisRoot: string | undefined,
+  wptpEmitNextJsRoot?: string,
+): HarnessRunResult {
+  return runSilverCompose(
+    "har-ir-nextjs-chrysalis",
+    (input, out, chrysalis) =>
+      composeHarIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+      }),
     harPath,
     chrysalisRoot,
   );
