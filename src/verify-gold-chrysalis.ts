@@ -51,7 +51,10 @@ export function runOptionalGoldPhpWebirHono(chrysalisRoot: string | undefined): 
     return { id, grade: "gold", ok: false, detail: "missing fixtures/tiny-blog" };
   }
 
-  const statusRun = spawnSync(process.execPath, [cli, "status", tinyBlog, "--json"], {
+  const traces = join(root, "traces");
+  const report = join(root, "reports", "verify");
+  const statusArgs = [cli, "status", tinyBlog, "--json", "--traces", traces, "--report", report];
+  const statusRun = spawnSync(process.execPath, statusArgs, {
     cwd: root,
     encoding: "utf8",
     timeout: 300_000,
@@ -74,6 +77,7 @@ export function runOptionalGoldPhpWebirHono(chrysalisRoot: string | undefined): 
     return { id, grade: "gold", ok: false, detail: "chrysalis status JSON parse failed" };
   }
 
+  let emitOk = true;
   if (existsSync(emitScript)) {
     const matrixRoot = join(import.meta.dirname, "..");
     const openapiFixture = join(matrixRoot, "fixtures", "petstore-mini.openapi.json");
@@ -81,6 +85,7 @@ export function runOptionalGoldPhpWebirHono(chrysalisRoot: string | undefined): 
       const outDir = mkdtempSync(join(tmpdir(), "wptp-gold-"));
       try {
         const webir = composeOpenApiIrHonoChrysalis(openapiFixture, outDir, { chrysalisRoot: root });
+        emitOk = webir.emitOk;
         checks.push(`webir-emit-hono ok=${webir.emitOk} handlers=${webir.handlerCount}`);
       } finally {
         rmSync(outDir, { recursive: true, force: true });
@@ -88,11 +93,14 @@ export function runOptionalGoldPhpWebirHono(chrysalisRoot: string | undefined): 
     }
   }
 
-  const ok = typeof correctness === "number" && correctness + 1e-9 >= 100;
+  const minPct = Number(process.env.WPTP_PHP_WEBIR_MIN_CORRECTNESS_PCT ?? "100");
+  const correctnessOk =
+    typeof correctness === "number" && Number.isFinite(minPct) && correctness + 1e-9 >= minPct;
+  const ok = emitOk && correctnessOk;
   return {
     id,
     grade: "gold",
     ok,
-    detail: checks.join("; "),
+    detail: `${checks.join("; ")}; minCorrectnessPct=${minPct}`,
   };
 }

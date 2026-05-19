@@ -8,6 +8,7 @@ describe("optional gold harness", () => {
   it("reads correctness.aggregate (0–1) from chrysalis status JSON", () => {
     expect(readCorrectnessPercentFromStatusJson({ correctness: { aggregate: 1 } })).toBe(100);
     expect(readCorrectnessPercentFromStatusJson({ migration: { correctness: 0.95 } })).toBe(95);
+    expect(readCorrectnessPercentFromStatusJson({ correctness: { aggregate: 2 / 3 } })).toBeCloseTo(66.67, 1);
   });
 
   it("skips php-webir-hono when CHRYSALIS_ROOT is unset", () => {
