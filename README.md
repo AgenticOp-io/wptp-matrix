@@ -33,9 +33,12 @@ npm run compose -- --path openapi-ir-hono --in fixtures/petstore-mini.openapi.js
 
 Open `site/index.html` locally, or use **GitHub Pages** after enabling Pages on this repo (workflow `pages.yml` deploys `_site/` on push to `main`).
 
-Matrix viewer shows **18 edges** + **8 composer paths** with grade filters.
+Matrix viewer shows **20 edges** + **10 composer paths** with grade filters.
 
-**Optional gold smoke (local):** set `CHRYSALIS_ROOT` to a built Chrysalis checkout, then `npm run verify:harness` also runs `php-webir-hono` (`chrysalis status` on tiny-blog).
+**Optional Chrysalis paths (local):** set `CHRYSALIS_ROOT` to a built Chrysalis checkout (`pnpm -r build`), then `npm run verify:harness` also runs:
+
+- **Silver:** `openapi-ir-hono-chrysalis`, `har-ir-hono-chrysalis` (IR → WebIR → `emit-webir-bundle-hono`)
+- **Gold:** `php-webir-hono` (`chrysalis status` on tiny-blog; requires **100%** correctness)
 ```
 
 ## Related

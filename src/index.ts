@@ -13,7 +13,11 @@ export {
   composeOpenApiIrHono,
   type ComposeHonoResult,
 } from "./compose-hono.js";
-export { composeOpenApiIrHonoChrysalis } from "./compose-chrysalis-hono.js";
+export {
+  composeHarIrHonoChrysalis,
+  composeOpenApiIrHonoChrysalis,
+  type ComposeChrysalisHonoResult,
+} from "./compose-chrysalis-hono.js";
 export { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
 export {
   verifyComposedNextJsBronze,

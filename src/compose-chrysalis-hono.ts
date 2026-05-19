@@ -1,28 +1,28 @@
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { spawnSync } from "node:child_process";
+import { importHarJson } from "@wptp/adapter-browser";
 import { importOpenApiJson } from "@wptp/adapter-openapi";
-import { assertIrDocumentV0, exportIrToWebIrBundleV0 } from "@wptp/ir";
+import { assertIrDocumentV0, exportIrToWebIrBundleV0, type IrDocumentV0 } from "@wptp/ir";
 
-/** Optional path: OpenAPI → IR → WebIR → Chrysalis emit-hono (PHP-shaped lowering; not for bare contracts). */
-export function composeOpenApiIrHonoChrysalis(
-  openapiJsonPath: string,
-  outDir: string,
-  options: { readonly sourceApp?: string; readonly chrysalisRoot: string },
-): {
+export type ComposeChrysalisHonoResult = {
   readonly bundlePath: string;
   readonly emitOk: boolean;
   readonly handlerCount: number;
-} {
-  const openapi = JSON.parse(readFileSync(openapiJsonPath, "utf8"));
-  const ir = importOpenApiJson(openapi, options.sourceApp);
-  assertIrDocumentV0(ir);
+};
+
+function emitIrToChrysalisHono(
+  ir: IrDocumentV0,
+  outDir: string,
+  chrysalisRoot: string,
+  bundleBasename: string,
+): ComposeChrysalisHonoResult {
   const bundle = exportIrToWebIrBundleV0(ir);
-  const bundlePath = join(outDir, ".wptp", "petstore.webir.bundle.json");
+  const bundlePath = join(outDir, ".wptp", bundleBasename);
   mkdirSync(dirname(bundlePath), { recursive: true });
   writeFileSync(bundlePath, JSON.stringify(bundle, null, 2), "utf8");
 
-  const script = join(options.chrysalisRoot, "scripts", "emit-webir-bundle-hono.mjs");
+  const script = join(chrysalisRoot, "scripts", "emit-webir-bundle-hono.mjs");
   const run = spawnSync(process.execPath, [script, "--bundle", bundlePath, "--out", outDir], {
     encoding: "utf8",
   });
@@ -37,4 +37,28 @@ export function composeOpenApiIrHonoChrysalis(
     }
   }
   return { bundlePath, emitOk, handlerCount };
+}
+
+/** Silver path: OpenAPI → IR → WebIR → Chrysalis emit-hono (lowering beyond bronze stubs). */
+export function composeOpenApiIrHonoChrysalis(
+  openapiJsonPath: string,
+  outDir: string,
+  options: { readonly sourceApp?: string; readonly chrysalisRoot: string },
+): ComposeChrysalisHonoResult {
+  const openapi = JSON.parse(readFileSync(openapiJsonPath, "utf8"));
+  const ir = importOpenApiJson(openapi, options.sourceApp);
+  assertIrDocumentV0(ir);
+  return emitIrToChrysalisHono(ir, outDir, options.chrysalisRoot, "petstore.webir.bundle.json");
+}
+
+/** Silver path: HAR → IR → WebIR → Chrysalis emit-hono. */
+export function composeHarIrHonoChrysalis(
+  harJsonPath: string,
+  outDir: string,
+  options: { readonly sourceApp?: string; readonly chrysalisRoot: string },
+): ComposeChrysalisHonoResult {
+  const har = JSON.parse(readFileSync(harJsonPath, "utf8"));
+  const ir = importHarJson(har, options.sourceApp);
+  assertIrDocumentV0(ir);
+  return emitIrToChrysalisHono(ir, outDir, options.chrysalisRoot, "har.webir.bundle.json");
 }

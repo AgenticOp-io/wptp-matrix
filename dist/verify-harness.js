@@ -7,6 +7,7 @@ import { composeHarIrHono, composeOpenApiIrHono } from "./compose-hono.js";
 import { verifyComposedFastifyBronze, verifyComposedFastifyRuntime } from "./verify-fastify-bronze.js";
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
 import { runOptionalGoldPhpWebirHono } from "./verify-gold-chrysalis.js";
+import { runSilverHarIrHonoChrysalis, runSilverOpenApiIrHonoChrysalis } from "./verify-silver-chrysalis.js";
 import { loadContractReplaySpec, verifyComposedFastifyContractReplay, verifyComposedHonoContractReplay, } from "./verify-replay.js";
 import { verifyComposedNextJsBronze } from "./verify-contract.js";
 const OPENAPI_ROUTES = [
@@ -47,6 +48,16 @@ export const HARNESS_CASES = [
         id: "har-ir-fastify-contract-gold",
         grade: "gold",
         description: "HAR composed Fastify + contract replay (no Chrysalis)",
+    },
+    {
+        id: "openapi-ir-hono-chrysalis",
+        grade: "silver",
+        description: "OpenAPI → IR → WebIR → Chrysalis emit-hono (silver lowering)",
+    },
+    {
+        id: "har-ir-hono-chrysalis",
+        grade: "silver",
+        description: "HAR → IR → WebIR → Chrysalis emit-hono (silver lowering)",
     },
     { id: "php-webir-hono", grade: "gold", description: "Chrysalis ingest + emit-hono + verify (monolith CI)" },
 ];
@@ -152,6 +163,8 @@ export async function runMatrixHarness(options) {
     results.push(await runContractGoldHono("har-ir-hono-contract-gold", composeHarIrHono, join(root, "mini.har.json"), join(options.outDir, "har-hono-gold"), join(replayDir, "mini-har.replay.json")));
     results.push(await runContractGoldFastify("openapi-ir-fastify-contract-gold", composeOpenApiIrFastify, join(root, "petstore-mini.openapi.json"), join(options.outDir, "openapi-fastify-gold"), join(replayDir, "petstore-openapi.replay.json")));
     results.push(await runContractGoldFastify("har-ir-fastify-contract-gold", composeHarIrFastify, join(root, "mini.har.json"), join(options.outDir, "har-fastify-gold"), join(replayDir, "mini-har.replay.json")));
+    results.push(runSilverOpenApiIrHonoChrysalis(join(root, "petstore-mini.openapi.json"), process.env.CHRYSALIS_ROOT));
+    results.push(runSilverHarIrHonoChrysalis(join(root, "mini.har.json"), process.env.CHRYSALIS_ROOT));
     results.push(runOptionalGoldPhpWebirHono(process.env.CHRYSALIS_ROOT));
     return results;
 }

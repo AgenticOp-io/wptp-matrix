@@ -82,6 +82,28 @@
         { "repo": "theorem6/wptp-ir", "action": "importWebIrBundleJson" }
       ],
       "matrixEdges": ["webir-bundle-to-wptp-ir"]
+    },
+    {
+      "id": "openapi-ir-hono-chrysalis",
+      "description": "OpenAPI → IR → WebIR → Chrysalis emit-hono (silver)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
+      ],
+      "matrixEdges": ["openapi-to-wptp-ir", "openapi-composed-hono-chrysalis-silver"]
+    },
+    {
+      "id": "har-ir-hono-chrysalis",
+      "description": "HAR → IR → WebIR → Chrysalis emit-hono (silver)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
+      ],
+      "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-hono-chrysalis-silver"]
     }
   ]
 }
