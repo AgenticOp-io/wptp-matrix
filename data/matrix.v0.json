@@ -409,6 +409,28 @@
       }
     },
     {
+      "id": "echo-api-composed-hono-chrysalis-silver",
+      "source": {
+        "family": "openapi-contract",
+        "component": "wptp-adapter-openapi",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "target": {
+        "family": "hono-typescript",
+        "component": "chrysalis-emit-hono",
+        "repo": "AgenticOp-io/chrysalis"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/echo-api.openapi.json",
+        "ci": "chrysalis wptp:d3-silver-harness + wptp-matrix verify:harness",
+        "harness": "echo-api-ir-hono-chrysalis",
+        "notes": "Second silver OpenAPI corpus; CHRYSALIS_ROOT + emit-webir-bundle-hono."
+      }
+    },
+    {
       "id": "har-composed-hono-chrysalis-silver",
       "source": {
         "family": "browser-trace",

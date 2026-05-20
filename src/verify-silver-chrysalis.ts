@@ -61,6 +61,18 @@ export function runSilverHarIrHonoChrysalis(
   );
 }
 
+export function runSilverEchoApiIrHonoChrysalis(
+  openapiPath: string,
+  chrysalisRoot: string | undefined,
+): HarnessRunResult {
+  return runSilverCompose(
+    "echo-api-ir-hono-chrysalis",
+    (input, out, chrysalis) => composeOpenApiIrHonoChrysalis(input, out, { chrysalisRoot: chrysalis }),
+    openapiPath,
+    chrysalisRoot,
+  );
+}
+
 export function runSilverOpenApiIrNextJsChrysalis(
   openapiPath: string,
   chrysalisRoot: string | undefined,

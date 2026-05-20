@@ -106,6 +106,17 @@
       "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-hono-chrysalis-silver"]
     },
     {
+      "id": "echo-api-ir-hono-chrysalis",
+      "description": "Echo OpenAPI → IR → WebIR → Chrysalis emit-hono (silver)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-hono" }
+      ],
+      "matrixEdges": ["openapi-to-wptp-ir", "echo-api-composed-hono-chrysalis-silver"]
+    },
+    {
       "id": "openapi-ir-nextjs-chrysalis",
       "description": "OpenAPI → IR → WebIR → @wptp/emit-nextjs (silver, Chrysalis WebIR bridge)",
       "grade": "silver",
