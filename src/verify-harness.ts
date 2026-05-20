@@ -13,6 +13,7 @@ import { verifyComposedFastifyBronze, verifyComposedFastifyRuntime } from "./ver
 import { verifyComposedHonoBronze, verifyComposedHonoRuntime } from "./verify-hono-bronze.js";
 import { runOptionalGoldPhpWebirHono } from "./verify-gold-chrysalis.js";
 import {
+  runSilverEchoApiIrNextJsChrysalis,
   runSilverHarIrHonoChrysalis,
   runSilverHarIrNextJsChrysalis,
   runSilverOpenApiIrHonoChrysalis,
@@ -101,6 +102,11 @@ export const HARNESS_CASES: ReadonlyArray<HarnessCase> = [
     id: "har-ir-nextjs-chrysalis",
     grade: "silver",
     description: "HAR → IR → WebIR → @wptp/emit-nextjs via Chrysalis bundle bridge",
+  },
+  {
+    id: "echo-api-ir-nextjs-chrysalis",
+    grade: "silver",
+    description: "Echo OpenAPI → IR → WebIR → @wptp/emit-nextjs via Chrysalis bundle bridge",
   },
   { id: "php-webir-hono", grade: "gold", description: "Chrysalis ingest + emit-hono + verify (monolith CI)" },
 ];
@@ -351,6 +357,13 @@ export async function runMatrixHarness(options: {
   results.push(
     runSilverOpenApiIrNextJsChrysalis(
       join(root, "petstore-mini.openapi.json"),
+      process.env.CHRYSALIS_ROOT,
+      emitNextJsRoot,
+    ),
+  );
+  results.push(
+    runSilverEchoApiIrNextJsChrysalis(
+      join(root, "echo-api.openapi.json"),
       process.env.CHRYSALIS_ROOT,
       emitNextJsRoot,
     ),

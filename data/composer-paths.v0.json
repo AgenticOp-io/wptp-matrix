@@ -126,6 +126,17 @@
         { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-nextjs" }
       ],
       "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-nextjs-chrysalis-silver"]
+    },
+    {
+      "id": "echo-api-ir-nextjs-chrysalis",
+      "description": "Echo OpenAPI → IR → WebIR → @wptp/emit-nextjs (silver, Chrysalis WebIR bridge)",
+      "grade": "silver",
+      "steps": [
+        { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
+        { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-nextjs" }
+      ],
+      "matrixEdges": ["openapi-to-wptp-ir", "echo-api-composed-nextjs-chrysalis-silver"]
     }
   ]
 }

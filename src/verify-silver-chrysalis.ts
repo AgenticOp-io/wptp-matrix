@@ -78,6 +78,23 @@ export function runSilverOpenApiIrNextJsChrysalis(
   );
 }
 
+export function runSilverEchoApiIrNextJsChrysalis(
+  openapiPath: string,
+  chrysalisRoot: string | undefined,
+  wptpEmitNextJsRoot?: string,
+): HarnessRunResult {
+  return runSilverCompose(
+    "echo-api-ir-nextjs-chrysalis",
+    (input, out, chrysalis) =>
+      composeOpenApiIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+      }),
+    openapiPath,
+    chrysalisRoot,
+  );
+}
+
 export function runSilverHarIrNextJsChrysalis(
   harPath: string,
   chrysalisRoot: string | undefined,

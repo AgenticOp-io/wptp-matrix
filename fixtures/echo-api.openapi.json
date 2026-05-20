@@ -1,0 +1,20 @@
+{
+  "openapi": "3.0.3",
+  "info": { "title": "Echo API", "version": "1.0.0" },
+  "paths": {
+    "/echo": {
+      "get": {
+        "operationId": "echoGet",
+        "summary": "Echo probe",
+        "responses": { "200": { "description": "Echo ok" } }
+      }
+    },
+    "/echo/{token}": {
+      "get": {
+        "operationId": "echoToken",
+        "summary": "Echo with token",
+        "responses": { "200": { "description": "Echo token" } }
+      }
+    }
+  }
+}

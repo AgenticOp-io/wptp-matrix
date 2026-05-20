@@ -2,6 +2,7 @@ import { mkdtempSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import { composeHarIrHonoChrysalis, composeOpenApiIrHonoChrysalis } from "./compose-chrysalis-hono.js";
+import { composeHarIrNextJsChrysalis, composeOpenApiIrNextJsChrysalis } from "./compose-chrysalis-nextjs.js";
 function runSilverCompose(id, composeFn, inputPath, chrysalisRoot) {
     if (!chrysalisRoot?.trim()) {
         return {
@@ -31,4 +32,22 @@ export function runSilverOpenApiIrHonoChrysalis(openapiPath, chrysalisRoot) {
 }
 export function runSilverHarIrHonoChrysalis(harPath, chrysalisRoot) {
     return runSilverCompose("har-ir-hono-chrysalis", (input, out, chrysalis) => composeHarIrHonoChrysalis(input, out, { chrysalisRoot: chrysalis }), harPath, chrysalisRoot);
+}
+export function runSilverOpenApiIrNextJsChrysalis(openapiPath, chrysalisRoot, wptpEmitNextJsRoot) {
+    return runSilverCompose("openapi-ir-nextjs-chrysalis", (input, out, chrysalis) => composeOpenApiIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+    }), openapiPath, chrysalisRoot);
+}
+export function runSilverEchoApiIrNextJsChrysalis(openapiPath, chrysalisRoot, wptpEmitNextJsRoot) {
+    return runSilverCompose("echo-api-ir-nextjs-chrysalis", (input, out, chrysalis) => composeOpenApiIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+    }), openapiPath, chrysalisRoot);
+}
+export function runSilverHarIrNextJsChrysalis(harPath, chrysalisRoot, wptpEmitNextJsRoot) {
+    return runSilverCompose("har-ir-nextjs-chrysalis", (input, out, chrysalis) => composeHarIrNextJsChrysalis(input, out, {
+        chrysalisRoot: chrysalis,
+        wptpEmitNextJsRoot: wptpEmitNextJsRoot,
+    }), harPath, chrysalisRoot);
 }

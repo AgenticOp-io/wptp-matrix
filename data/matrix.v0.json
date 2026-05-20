@@ -473,6 +473,28 @@
         "harness": "har-ir-nextjs-chrysalis",
         "notes": "CHRYSALIS_ROOT + customer-owned HAR only."
       }
+    },
+    {
+      "id": "echo-api-composed-nextjs-chrysalis-silver",
+      "source": {
+        "family": "openapi-contract",
+        "component": "wptp-adapter-openapi",
+        "repo": "theorem6/wptp-adapter-openapi"
+      },
+      "target": {
+        "family": "nextjs-route-handlers",
+        "component": "wptp-emit-nextjs",
+        "repo": "theorem6/wptp-emit-nextjs"
+      },
+      "grade": "silver",
+      "status": "supported",
+      "irHub": "theorem6/wptp-ir",
+      "evidence": {
+        "corpus": "fixtures/echo-api.openapi.json",
+        "ci": "chrysalis wptp-silver-nextjs-harness + wptp-matrix verify:harness",
+        "harness": "echo-api-ir-nextjs-chrysalis",
+        "notes": "Second silver OpenAPI corpus (echo paths); CHRYSALIS_ROOT + WPTP_EMIT_NEXTJS_ROOT."
+      }
     }
   ]
 }
