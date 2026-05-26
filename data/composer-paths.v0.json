@@ -69,7 +69,7 @@
       "description": "Legacy PHP to Hono TypeScript (Chrysalis monolith path)",
       "grade": "gold",
       "steps": [
-        { "repo": "theorem6/chrysalis", "action": "ingest + emit-hono + verify" }
+        { "repo": "AgenticOp-io/chrysalis", "action": "ingest + emit-hono + verify" }
       ],
       "matrixEdges": ["php-legacy-to-hono-ts"]
     },
@@ -78,7 +78,7 @@
       "description": "Chrysalis WebIR bundle to WPTP IR v0",
       "grade": "gold",
       "steps": [
-        { "repo": "theorem6/chrysalis", "action": "export-webir-bundle" },
+        { "repo": "AgenticOp-io/chrysalis", "action": "export-webir-bundle" },
         { "repo": "theorem6/wptp-ir", "action": "importWebIrBundleJson" }
       ],
       "matrixEdges": ["webir-bundle-to-wptp-ir"]
@@ -90,7 +90,7 @@
       "steps": [
         { "repo": "theorem6/wptp-adapter-openapi", "action": "importOpenApiJson" },
         { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
-        { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-hono" }
       ],
       "matrixEdges": ["openapi-to-wptp-ir", "openapi-composed-hono-chrysalis-silver"]
     },
@@ -101,7 +101,7 @@
       "steps": [
         { "repo": "theorem6/wptp-adapter-browser", "action": "importHarJson" },
         { "repo": "theorem6/wptp-ir", "action": "exportIrToWebIrBundleV0" },
-        { "repo": "theorem6/chrysalis", "action": "emit-webir-bundle-hono" }
+        { "repo": "AgenticOp-io/chrysalis", "action": "emit-webir-bundle-hono" }
       ],
       "matrixEdges": ["browser-trace-to-wptp-ir", "har-composed-hono-chrysalis-silver"]
     },
