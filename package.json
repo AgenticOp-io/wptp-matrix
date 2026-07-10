@@ -6,7 +6,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/theorem6/wptp-matrix.git"
+    "url": "https://github.com/AgenticOp-io/wptp-matrix.git"
   },
   "bin": {
     "wptp-compose": "./dist/compose-cli.js",
@@ -33,12 +33,12 @@
     }
   },
   "dependencies": {
-    "@wptp/ir": "github:theorem6/wptp-ir#v0.1.3",
-    "@wptp/adapter-openapi": "github:theorem6/wptp-adapter-openapi#v0.1.1",
-    "@wptp/adapter-browser": "github:theorem6/wptp-adapter-browser#v0.1.1",
-    "@wptp/emit-nextjs": "github:theorem6/wptp-emit-nextjs#v0.1.1",
-    "@wptp/emit-hono": "github:theorem6/wptp-emit-hono#v0.1.1",
-    "@wptp/emit-fastify": "github:theorem6/wptp-emit-fastify#v0.1.0"
+    "@wptp/ir": "github:AgenticOp-io/wptp-ir#v0.1.3",
+    "@wptp/adapter-openapi": "github:AgenticOp-io/wptp-adapter-openapi#v0.1.1",
+    "@wptp/adapter-browser": "github:AgenticOp-io/wptp-adapter-browser#v0.1.1",
+    "@wptp/emit-nextjs": "github:AgenticOp-io/wptp-emit-nextjs#v0.1.1",
+    "@wptp/emit-hono": "github:AgenticOp-io/wptp-emit-hono#v0.1.1",
+    "@wptp/emit-fastify": "github:AgenticOp-io/wptp-emit-fastify#v0.1.0"
   },
   "devDependencies": {
     "@types/node": "^20.12.0",
